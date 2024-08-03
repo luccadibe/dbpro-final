@@ -1,8 +1,9 @@
 #!/bin/bash
 
 
-if [ -z "$1" ] || [ -z "$2" ]; then
-    echo "Usage: $0 <dbgen_size> <test: power,boot>"
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]  || [ -z "$4" ]; then
+    echo "Usage: $0 <dbgen_size> <test: power,boot> <memoryGB> <iterations>"
+    echo "Example: $0 1 power 1 10"
     exit 1
 fi
 # dbgen_size is the scale factor used for the generated database
@@ -10,7 +11,8 @@ fi
 
 DBGEN_SIZE=$1
 TEST=$2
-
+MEMORY=$3
+ITERATIONS=$4
 # check if directory TPCH-sqlite exists
 # the generated db is stored in TPCH-sqlite and follows the naming convention TPC-H-<dbgen_size>.db
 if [ ! -d "TPCH-sqlite" ]; then
@@ -36,7 +38,22 @@ fi
 
 cd unikraft
 
-sh ./generate-kernel.sh $DBGEN_SIZE $TEST
+echo "Building unikraft unikernel..."
+sh generate-kernel.sh $DBGEN_SIZE $TEST
 
+cd ..
+
+# TODO nanos, osv...
+
+
+# run the benchmark
+echo "Running the benchmark..."
+
+echo "Unikraft"
+cd unikraft
+
+python3 benchmark.py $DBGEN_SIZE ${MEMORY}Gi $ITERATIONS
+
+cd ..
 
 # TODO nanos, osv...

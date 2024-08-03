@@ -6,8 +6,9 @@ if [ -z "$1" ] || [ -z "$2" ]; then
     exit 1
 fi
 
+TEST=$2
 
-if [ $TEST = "power" ]; then
+if [ "$TEST" = "power" ]; then
     # if there is a db of the specified size in the rootfs, use it
     # if not, erase the current db and use the new one
     if [ ! -e "rootfs/TPC-H-$1.db" ]; then
@@ -18,6 +19,7 @@ if [ $TEST = "power" ]; then
     if [ ! -e "rootfs/query1.sql" ]; then
         cp ../queries/* rootfs/
     fi
+    # The following Kraftfile configuration runs the queries in order and exits
     cat <<EOF > Kraftfile
 spec: v0.6
 
@@ -27,7 +29,7 @@ rootfs: ./rootfs
 
 cmd:
   [
-    "/TPC-H-$DBGEN_SIZE.db",
+    "/TPC-H-$1.db",
     ".timer 'on'",
     ".read 'query1.sql'",
     ".read 'query2.sql'",
@@ -86,10 +88,11 @@ libraries:
       CONFIG_LIBSQLITE_MAIN_FUNCTION: "y"
 EOF
     
-    elif [ $TEST = "boot" ]; then
+    elif [ "$TEST" = "boot" ]; then
     if [  -e "rootfs/query1.sql" ]; then
-        rm query*.sql
+        rm rootfs/query*.sql
     fi
+    # We use a Kraftfile configuration that makes the unikernel exit instantly
     cat <<EOF > Kraftfile
 spec: v0.6
 
