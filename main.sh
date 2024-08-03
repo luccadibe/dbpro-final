@@ -68,7 +68,7 @@ if [ "$TEST" == "boot" ]; then
     echo "Unikraft"
     cd unikraft
     
-    python3 boot/measure_boot_time.py $ITERATIONS boot/boot_time.csv
+    sh boot/bash/measure_boot_time.sh $ITERATIONS boot_time.csv
     
     cd ..
     
