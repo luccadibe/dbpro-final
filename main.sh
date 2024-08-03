@@ -45,15 +45,32 @@ cd ..
 
 # TODO nanos, osv...
 
+if [ "$TEST" == "power" ]; then
+    
+    # run the benchmark
+    echo "Running the benchmark..."
+    
+    echo "Unikraft"
+    cd unikraft
+    
+    python3 benchmark.py $DBGEN_SIZE ${MEMORY}Gi $ITERATIONS
+    
+    cd ..
+    
+    # TODO nanos, osv...
+fi
 
-# run the benchmark
-echo "Running the benchmark..."
-
-echo "Unikraft"
-cd unikraft
-
-python3 benchmark.py $DBGEN_SIZE ${MEMORY}Gi $ITERATIONS
-
-cd ..
-
-# TODO nanos, osv...
+if [ "$TEST" == "boot" ]; then
+    
+    # run the benchmark
+    echo "Running the boot test..."
+    
+    echo "Unikraft"
+    cd unikraft
+    
+    python3 boot/measure_boot_time.py $ITERATIONS boot/boot_time.csv
+    
+    cd ..
+    
+    # TODO nanos, osv...
+fi
