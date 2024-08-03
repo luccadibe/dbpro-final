@@ -20,7 +20,7 @@ if [ ! -d "TPCH-sqlite" ]; then
     cd TPCH-sqlite
     SCALE_FACTOR=$DBGEN_SIZE make
     mv TPC-H.db TPC-H-$DBGEN_SIZE.db
-    
+    cd ..
     #check if there is already a generated db of the specified size
     elif [ ! -e "TPCH-sqlite/TPC-H-$DBGEN_SIZE.db" ]; then
     # remove all the tbl files in the TPCH-sqlite directory
@@ -31,6 +31,7 @@ if [ ! -d "TPCH-sqlite" ]; then
     SCALE_FACTOR=$DBGEN_SIZE make
     
     mv TPC-H.db TPC-H-$DBGEN_SIZE.db
+    cd ..
 fi
 
 
@@ -68,7 +69,7 @@ if [ "$TEST" == "boot" ]; then
     echo "Unikraft"
     cd unikraft
     
-    sh boot/bash/measure_boot_time.sh $ITERATIONS boot_time.csv
+    bash boot/bash/measure-boot-time.sh $ITERATIONS boot_time.csv
     
     cd ..
     
