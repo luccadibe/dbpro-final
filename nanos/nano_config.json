@@ -1,0 +1,9 @@
+{
+    "Files": ["TPC-H.db"], 
+    "Args": ["TPC-H.db", "2"],
+    "Dirs": ["queries", "tables"],
+    "BaseVolumeSz": "4g", 
+    "RunConfig": {
+        "Accel": true
+    }
+}

@@ -19,6 +19,10 @@ if [ ! -d "TPCH-sqlite" ]; then
     git clone --recursive https://github.com/lovasoa/TPCH-sqlite.git
     cd TPCH-sqlite
     SCALE_FACTOR=$DBGEN_SIZE make
+    
+    cp TPC-H.db ../TPC-H.db
+    cp ./tpch-dbgen/*.tbl ../tables/
+    
     mv TPC-H.db TPC-H-$DBGEN_SIZE.db
     cd ..
     #check if there is already a generated db of the specified size
@@ -58,7 +62,14 @@ if [ "$TEST" == "power" ]; then
     
     cd ..
     
-    # TODO nanos, osv...
+    # TODO osv..
+    
+    echo "Nanos"
+    cd nanos
+    
+    bash benchmark.sh $ITERATIONS $MEMORY
+    
+    cd ..
 fi
 
 if [ "$TEST" == "boot" ]; then
@@ -73,5 +84,13 @@ if [ "$TEST" == "boot" ]; then
     
     cd ..
     
-    # TODO nanos, osv...
+    echo "Nanos"
+    
+    cd nanos
+    
+    bash measure-boot-time.sh $ITERATIONS
+    
+    cd ..
+    
+    # TODO osv...
 fi
