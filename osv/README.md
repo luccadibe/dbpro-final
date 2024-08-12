@@ -46,6 +46,7 @@ bash main.sh 0.1 boot 4 5
 
 1. Checks if a pre-generated SQLite database exists for the specified `dbgen_size` (scale factor). If not, it generates the database and ensures that the necessary data files are available.
 2. Navigates to the `osv` directory and runs the `generate-kernel.sh` script. This step is responsible for setting up dependencies and compiling the OSv unikernel image, configured for the specified test (`power` or `boot`).
+    > **Note:** The setup requires root permissions, so before you proceed it's best to check out `unikernel/scripts/setup.py`.
 3. Running TPC-H benchmark (`power` test):
     - If the `test` parameter is set to `power`, the script runs the TPC-H benchmark on OSv by calling the `benchmark.sh` script.
     - It runs the benchmark with the specified database size, memory allocation, and number of iterations, measuring the performance of OSv.
