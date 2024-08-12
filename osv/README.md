@@ -70,9 +70,10 @@ Functions the same as the previous, but directly uses the built-in boot up measu
 ```
 bash ./benchmark.sh
 ```
-> Note: You will need to build the unikernel image manually before running this, as the script imports `.tbl` files directly into the SQLite database. If the image isn't built anew, the import statements won't work properly. You can build the image with:
+You will need to build the unikernel image manually before running this, as the script imports `.tbl` files directly into the SQLite database. If the image isn't built anew, the import statements won't work properly. You can build the image with:
 ```
 cd unikernel
 ./scripts/run.py
 cd ..
 ```
+> **Note:** If you want to build the image with a database of relatively large size, increase the size of the image with `fs_size_mb=6000` or a size you deem necessary. If the image size isn't large enough, the build process will fail.

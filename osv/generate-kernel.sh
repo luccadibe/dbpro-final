@@ -101,7 +101,7 @@ elif [ "$TEST" = "boot" ]; then
     echo '/usr/lib/libsqlite3.so.0: ${MODULE_DIR}/libsqlite3.so.0' > unikernel/apps/sqlite/usr.manifest
 
     echo "OSv: Building sqlite image..."
-    echo "OSv: If it's the first time you're building it, it might take a while..."
+    echo "OSv: If it's the first time you're building it, it might take a while and you might want to check osv/unikernel/build/build.log..."
 
     # Build the OSv unikernel image for the 'boot' test
     cd unikernel
