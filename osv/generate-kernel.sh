@@ -97,6 +97,8 @@ elif [ "$TEST" = "boot" ]; then
     # now that the usr.manifest is clean, we need to build the unikernel image
     cd unikernel
     mkdir -p build
+    > build/build.log
+
     ./scripts/build image=sqlite > build/build.log 2>&1
     cd ..
 
