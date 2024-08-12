@@ -1,5 +1,4 @@
 # TPC-H Query Performance Analysis
-
 ## Performance Categories
 1. Very Fast (< 0.5s): Q2, Q4, Q6, Q11, Q12, Q14, Q16, Q18
 2. Fast (0.5s - 1s): Q3, Q5, Q10, Q15, Q19
