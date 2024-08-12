@@ -1,38 +1,47 @@
 #!/bin/bash
 
-
+# Check if the required arguments are provided
 if [ -z "$1" ] || [ -z "$2" ]; then
     echo "Usage: $0 <dbgen_size> <test: power,boot>"
     exit 1
 fi
 
+# Set variables for the database generation size and the type of test to run
 DBGEN_SIZE=$1
 TEST=$2
 
+# Determine the directory where the script is located
 SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 
-# Install dependencies
-echo "OSv: Setting up dependencies..."
+# Install necessary dependencies for OSv - this requires root permissions
+echo "OSv: Setting up dependencies with root..."
 cd unikernel
 mkdir -p build 
 sudo ./scripts/setup.py > build/setup.log 2>&1
 cd ..
 echo "OSv: Setup successful."
 
+# Handle the different test cases: 'power' or 'boot'
 if [ "$TEST" = "power" ]; then
-    # If test is power, we need to build the images with the files and the queries
+    # For the 'power' test, prepare the TPC-H files and build the image with the necessary queries and data
+
     echo "OSv: Preparing TPC-H files..."
 
+    # Navigate to the parent directory to access the TPC-H files
     cd .. 
-#    cp TPCH-sqlite/TPC-H-$DBGEN_SIZE.db osv/apps/sqlite/tpch-data 
+
+    # Copy the necessary SQL and data files into the appropriate locations within the OSv directory
     cp TPCH-sqlite/sqlite-ddl.sql osv/unikernel/apps/sqlite/tpch-queries
     cp TPCH-sqlite/tpch-dbgen/*.tbl osv/unikernel/apps/sqlite/tpch-data
+
+    # Run a Python script to clean up the data files by removing the last separator
     python3 "$SCRIPT_DIR/unikernel/apps/sqlite/tpch-data/remove-last-separator.py" > "$SCRIPT_DIR/unikernel/build/remove-last-separator.logs"
-    #python3 osv/apps/sqlite/tpch-data/remove-last-separator.py > osv/unikernel/build/remove-last-separator.logs
+
+    # Copy the query files to the OSv directory
     cp queries/* osv/unikernel/apps/sqlite/tpch-queries
     cd osv
 
-    # Now we need to adjust the usr.manifest
+    # Modify the 'usr.manifest' file to include the paths to the necessary libraries, queries, and data files
     echo '/usr/lib/libsqlite3.so.0: ${MODULE_DIR}/libsqlite3.so.0
 /query1.sql: ${MODULE_DIR}/tpch-queries/query1.sql
 /query2.sql: ${MODULE_DIR}/tpch-queries/query2.sql
@@ -68,40 +77,39 @@ if [ "$TEST" = "power" ]; then
 
     echo "OSv: TPC-H files are ready for image build."
 
+    # Build the OSv unikernel image for the 'power' test
     echo "OSv: Building sqlite image..."
     echo "OSv: If it's the first time you're building it, it might take a while..."
     
-    # now that the usr.manifest is clean, we need to build the unikernel image
     cd unikernel
+    > build/build.log
     ./scripts/build image=sqlite > build/build.log 2>&1
     cd ..
 
+    # Check the build log to confirm if the build was successful
     last_line=$(tail -n 1 unikernel/build/build.log | tr -d '\n')
 
     if echo "$last_line" | grep -q "cpiod finished"; then
-        echo "OSv: sqlite image for power test built successfully!"
+        echo "OSv: sqlite image for power test built successfully! Check build.log the build directory."
     else
         echo "OSv: sqlite image build for power test failed! Check logs in the build directory!"
     fi
 
 
 elif [ "$TEST" = "boot" ]; then
-    # if the test is boot, we don't need any data
-    # meaning we need to keep the usr.manifest clean without any data
-    # cd apps/sqlite/usr.manifest
+    # For the 'boot' test, build the image without including any data files
     echo '/usr/lib/libsqlite3.so.0: ${MODULE_DIR}/libsqlite3.so.0' > unikernel/apps/sqlite/usr.manifest
 
     echo "OSv: Building sqlite image..."
     echo "OSv: If it's the first time you're building it, it might take a while..."
 
-    # now that the usr.manifest is clean, we need to build the unikernel image
+    # Build the OSv unikernel image for the 'boot' test
     cd unikernel
-    mkdir -p build
     > build/build.log
-
     ./scripts/build image=sqlite > build/build.log 2>&1
     cd ..
 
+    # Check the build log to confirm if the build was successful
     last_line=$(tail -n 1 unikernel/build/build.log | tr -d '\n')
 
     if echo "$last_line" | grep -q "cpiod finished"; then

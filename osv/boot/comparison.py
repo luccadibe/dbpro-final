@@ -12,7 +12,6 @@ csv_file_2 = os.path.join(script_dir, 'built-in-timer/boot-times.csv')
 df1 = pd.read_csv(csv_file_1)
 df2 = pd.read_csv(csv_file_2)
 
-# Add a column to differentiate the datasets
 df1['Dataset'] = 'Bash-sqlite timer'
 df2['Dataset'] = 'Built-in timer'
 
