@@ -48,7 +48,13 @@ sh generate-kernel.sh $DBGEN_SIZE $TEST
 
 cd ..
 
-# TODO nanos, osv...
+cd osv
+
+echo "OSv: Building unikernel image..."
+bash ./generate-kernel.sh $DBGEN_SIZE $TEST
+
+cd ..
+
 
 if [ "$TEST" == "power" ]; then
     
@@ -70,6 +76,13 @@ if [ "$TEST" == "power" ]; then
     bash benchmark.sh $ITERATIONS $MEMORY
     
     cd ..
+
+    echo "OSv"
+    cd osv
+    bash ./benchmark.sh $DBGEN_SIZE $MEMORY $ITERATIONS
+
+    cd ..
+
 fi
 
 if [ "$TEST" == "boot" ]; then
@@ -92,5 +105,10 @@ if [ "$TEST" == "boot" ]; then
     
     cd ..
     
-    # TODO osv...
+    cd osv
+
+    bash ./boot/built-in-timer/measure-boot-time.sh $MEMORY $ITERATIONS
+
+    cd ..
+
 fi
