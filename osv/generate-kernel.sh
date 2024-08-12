@@ -14,6 +14,7 @@ SCRIPT_DIR=$(dirname "$(readlink -f "$0")")
 # Install dependencies
 echo "OSv: Setting up dependencies..."
 cd unikernel
+mkdir -p build 
 sudo ./scripts/setup.py > build/setup.log 2>&1
 cd ..
 echo "OSv: Setup successful."
@@ -95,6 +96,7 @@ elif [ "$TEST" = "boot" ]; then
 
     # now that the usr.manifest is clean, we need to build the unikernel image
     cd unikernel
+    mkdir -p build
     ./scripts/build image=sqlite > build/build.log 2>&1
     cd ..
 
